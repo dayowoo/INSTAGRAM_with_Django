@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load post_extras %}
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+<head>
+{% block head %}
+  <title>Full Width Pics - Start Bootstrap Template</title>
+{% endblock %}
+</head>
+
+        {% block content %}
+<div class="search-header">
+    <h1 class="search-result-title">{{ hashtag.content }}</h1>
+
+    <span class="search-result-count">게시물</span>
+ <span class="count">{{ hashtag.post_set.count }}개</span>
+</div>
+{% for post in posts %}
+<article class="post-wrap">
+  <header>  
+    <a class="user-title" href="{% url 'main' %}">
+        {% if post.author.image %}
+        <img class="user-pic" src="{{ post.author.image.url }}" alt="프로필사진">
+        {% else %}
+        <img class="user-pic" src="{% static 'images/default/default.jpg' %}" alt="프로필사진">
+        {% endif %}
+        <span class="post-username">{{ post.author.name  }}</span>
+        </a>
+        {% if post.author == request.user %}
+        <span class=pull-right>
+          <a class="post-edit" href="">수정</a>
+          <form class="post-delete-form" action="" method="POST">
+            {% csrf_token %}
+            <input class="post-delete" type="submit" value="삭제" onclick="return confirm('정말 삭제하시겠습니까?')">
+          </form>
+        </span>
+        {% endif %}
+      </header>
+<img src="{{ post.image.url }}" alt="{{ post.author }}'s photo">
+<div class="post-content">
+  {% if user in post.like_user_set.all %}
+  <input type="button" class="like liked" name="{{ post.id }}">
+  {% else %}
+  <input type="button" class="like to-like" name="{{ post.id }}">
+  {% endif %}
+
+
+  <p class="like-count" id="count-{{ post.id }}">좋아요 {{ post.like_count }}개</p>
+
+  <p id="like-user-{{post.id}}">
+  {% if post.like_count != 0 %}
+    {% if post.like_user_set.all %}
+    {% for like_user in post.like_user_set.all %}
+    {{ like_user.author.name }}
+    {% endfor %}
+    님이 좋아합니다.
+    {% endif %}
+  {% endif %}
+  </p>
+<span class="post-username">{{ post.author.name }}</span>
+<span>{{ post|add_link|safe|linebreaksbr }}</span>
+
+</div>
+</article>  
+
+{% endfor %}
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+ <script type="text/javascript">
+$(document).on('click', '.like', function(){
+var pk = $(this).attr('name');
+$.ajax({ 
+  type: "POST", 
+  url: "{% url 'like' %}", 
+  data: {'pk': pk, 'csrfmiddlewaretoken': '{{ csrf_token }}'}, 
+  dataType: "json", 
+  success: function(response){
+    alert(response.message);
+    $("#count-"+pk).html("좋아요 "+response.like_count+"개");
+    var users = $(pk).text();
+    if(users.indexOf(response.username) != -1){
+      $("input.like[name="+pk+"]").toggleClass('liked unlike');
+    }else{
+      $("input.like[name="+pk+"]").toggleClass('to-like  liked');
+    }
+  },
+});
+});
+</script>
+</script>
+{% endblock %}
+</html>

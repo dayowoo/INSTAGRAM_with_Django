@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="container-fluid">
+  <div class="mylist-container">
+<div class="mylist-header">
+  <div class="mylist-header-pic">
+    {% if user.image %}
+    <img class="my-pic" src="{{ user_profile.image.url }}" alt="프로필사진">
+    {% else %}
+    <img class="my-pic" src="{% static 'images/default/default.jpg' %}" alt="프로필사진">
+    {% endif %}
+  </div>
+  <div class="mylist-header-info">
+    <h1 class="username">{{ username }}</h1>
+    {% if user.username == username %}
+    <a class="profile" href="" >프로필 편집</a>
+    <a class="profile" href="{% url 'sign_out' %}" >로그아웃</a>
+    </form>
+    {% endif %}
+    <ul class="info-list">
+      <li><span class="info-list-title">게시물</span> {{ user.post_set.count }}</li>
+      <li><span class="info-list-title">팔로워</span> {{ user.follower_count }}</li>
+      <li><span class="info-list-title">팔로우</span> {{ user.following_count }}</li>
+    </ul>
+    <p class="about"><span class="nickname">{{ user.name }}</span> {{ user.introduction|urlize }}</p>
+  </div>
+</div>
+<div class="mylist-content">
+  <div class="row">
+  {% if user.username == username %}
+  {% for post in post_list %}
+  <div class="pic col-md-4"><a href="{% url 'my_detail' post.id %}"><img class="pic-src" src="{{ post.image.url }}" alt="photo"></a></div>
+  {% endfor %}
+  {% endif %}
+</div>
+</div>
+</div>
+</div>
+{% endblock %}
+{% block footer %}
+{% endblock %}
+</body>
+
+</html>

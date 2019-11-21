@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+<head>
+{% block head %}
+  <title>Full Width Pics - Start Bootstrap Template</title>
+{% endblock %}
+</head>
+
+<body>
+    {% block content %}
+
+
+    <div class="form-container account-form-container">
+      <form class="form account-form" action="{% url 'post_new' %}" method='POST' enctype="multipart/form-data">
+        <div class="user-title">
+          <h1 class="form-title">NEW POST</h1>
+        </div>
+        <div class="preview">
+          <div class="upload">
+            <span class="preview-bg"></span>
+            <p class="preview-title">포스트 이미지 추가</p>
+            {% if post %}
+            <p><img id="img_id" src="{{ post.image.url }}" style="width: 300px; height: 300px; object-fit: cover" ></p>
+            {% else %}
+            <p><img id="img_id" src="" style="width: 300px; height: 300px; object-fit: cover" ></p>
+            {% endif %}
+          </div>
+        </div>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input class="submit_btn" type="submit" value="저장">
+      </form>
+    </div>
+
+    <script type="text/javascript">
+      function upload_img(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            $('#img_id').attr('src', e.target.result);
+          }
+          reader.readAsDataURL(input.files[0]);
+        }
+        $(".preview-bg").remove();
+        $(".preview-title").remove();
+      }
+      $("#id_image").change(function(){
+        upload_img(this);
+      });
+      $(document).on('click', '.upload', function(){
+        $("#id_image").click();
+      });
+      $('#id_image').attr("required", true);
+      </script>
+{% endblock %}
+</body>
+
+</html>
+{% block footer %}
+{% endblock %}

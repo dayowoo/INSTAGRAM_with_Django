@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}
+프로필 | Instagram
+{% endblock %}
+
+{% block content %}
+
+<h3>{{ user.profile.nickname }}'s 프로필</h3>
+<ul>
+  {% if user.profile.image %}
+  <li>picture:<img src="{{ user.profile.image.url }}" alt=""></li>
+  {% endif %}
+  <li>username : {{ user.username }}</li>
+  <li>email : {{ user.email }}</li>
+  <li>nickname : {{ user.profile.nickname }}</li>
+  <li>소개: {{ user.profile.about }}</li>
+  <li>성별: {{ user.profile.gender }}</li>
+  <li><a href="{% url 'sign_out' %}">로그아웃</a></li>
+  <li><a href="#">회원정보 변경</a></li>
+  <li><a href="#">비밀번호 변경</a></li>
+</ul>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

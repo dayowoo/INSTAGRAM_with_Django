@@ -1,13 +1,21 @@
 from django.db import models
 from django.conf import settings
 from account.models import User
+from imagekit.models import ProcessedImageField
+from imagekit.processors import ResizeToFill
+
+
 
 # Create your models here.
 class Post(models.Model):
     content = models.CharField(max_length=140, help_text="최대 140자 입력 가능")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image = models.ImageField(upload_to="images/", blank=True)
+    # image = models.ImageField(upload_to="images/", blank=True)
+    image = ProcessedImageField(upload_to="images/",
+                                processors=[ResizeToFill(600, 600)],
+                                format='JPEG',
+                                options={'quality': 90})
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     like_user_set = models.ManyToManyField(User, blank=True, related_name='like_user_set', through='Like')
     hashtags = models.ManyToManyField('Hashtag', blank=True)
@@ -25,6 +33,7 @@ class Post(models.Model):
         
     def index(self):
         return self.content[:50]
+
     
 class Hashtag(models.Model):
     content = models.TextField(unique=True)

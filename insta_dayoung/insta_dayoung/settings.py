@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'post.apps.PostConfig',
     'account.apps.AccountConfig',
+    'imagekit',
 ]
 
 MIDDLEWARE = [
